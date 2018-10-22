@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "229548960352",
+    "firebase_url": "https://find-me-tutor-523b0.firebaseio.com",
+    "project_id": "find-me-tutor-523b0",
+    "storage_bucket": "find-me-tutor-523b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229548960352:android:7bd71543f89d056a",
+        "android_client_info": {
+          "package_name": "com.example.flutterapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229548960352-j708u91ucknqnejgrnv7olr9kptrdi3l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlwOo4Uavs6FCw8UudLRBAdyuoqP8fJ2I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
