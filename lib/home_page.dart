@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'auth_provider.dart';
+import 'package:map_view/map_view.dart';
+
+var apiKey = "<your api key>";
+final MapView mapView = new MapView();
 
 class HomePage extends StatelessWidget {
   HomePage({this.onSignedOut});
