@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'auth_provider.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class EmailFieldValidator {
   static String validate(String value) {
@@ -28,9 +29,15 @@ enum FormType {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
-
+  final mainReference = FirebaseDatabase.instance.reference();
   String _email;
   String _password;
+  String _name;
+  String _mobile;
+  int groupValue;
+
+  String usertype;
+
   FormType _formType = FormType.login;
 
   bool validateAndSave() {
@@ -53,6 +60,16 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           String userId =
               await auth.createUserWithEmailAndPassword(_email, _password);
+          final ref = FirebaseDatabase.instance.reference();
+          var jsondata = {
+            "email": _email,
+            "password": _password,
+            "name": _name,
+            "mobile": _mobile,
+            "usertype": usertype
+          };
+          ref.child('users').push().set(jsondata);
+
           print('Registered user: $userId');
         }
         widget.onSignedIn();
@@ -97,13 +114,21 @@ class _LoginPageState extends State<LoginPage> {
     return [
       TextFormField(
         key: Key('email'),
-        decoration: InputDecoration(labelText: 'Email'),
+        decoration: InputDecoration(
+          labelText: 'Email',
+          icon: const Icon(Icons.email),
+          hintText: 'Enter a email address',
+        ),
         validator: EmailFieldValidator.validate,
         onSaved: (value) => _email = value,
       ),
       TextFormField(
         key: Key('password'),
-        decoration: InputDecoration(labelText: 'Password'),
+        decoration: InputDecoration(
+          labelText: 'Password',
+          icon: const Icon(Icons.lock),
+          hintText: 'Enter a Password',
+        ),
         obscureText: true,
         validator: PasswordFieldValidator.validate,
         onSaved: (value) => _password = value,
@@ -126,6 +151,44 @@ class _LoginPageState extends State<LoginPage> {
       ];
     } else {
       return [
+        TextFormField(
+          key: Key('name'),
+          decoration: InputDecoration(
+            icon: const Icon(Icons.person),
+            hintText: 'Enter your first and last name',
+            labelText: 'Name',
+          ),
+          obscureText: false,
+          onSaved: (value) => _name = value,
+        ),
+        TextFormField(
+          key: Key('mobile number'),
+          decoration: InputDecoration(
+            icon: const Icon(Icons.phone),
+            hintText: 'Enter a phone number',
+            labelText: 'Phone',
+          ),
+          obscureText: false,
+          onSaved: (value) => _mobile = value,
+        ),
+        new Row(children: [
+          new Text(
+            "You're a :",
+            style: TextStyle(fontSize: 20.0),
+          ),
+          Radio(
+            value: 1,
+            groupValue: groupValue,
+            onChanged: (int utype) => something(utype),
+          ),
+          Text("Tutor"),
+          Radio(
+            value: 2,
+            groupValue: groupValue,
+            onChanged: (int utype) => something(utype),
+          ),
+          Text("Student"),
+        ]),
         RaisedButton(
           child: Text('Create an account', style: TextStyle(fontSize: 20.0)),
           onPressed: validateAndSubmit,
@@ -137,5 +200,17 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ];
     }
+  }
+
+  void something(int utype) {
+    setState(() {
+      if (utype == 1) {
+        groupValue = 1;
+        usertype = "Tutor";
+      } else if (utype == 2) {
+        groupValue = 2;
+        usertype = "Student";
+      }
+    });
   }
 }

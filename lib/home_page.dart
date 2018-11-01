@@ -2,8 +2,15 @@ import 'package:flutter/material.dart';
 import 'auth_provider.dart';
 import 'package:map_view/map_view.dart';
 
-var apiKey = "<your api key>";
+var apiKey = "AIzaSyBlUWeW6NpkVWZ5yauucWt-RjQCE_pe6GM";
+
 final MapView mapView = new MapView();
+
+void displayMap() {
+  MapView.setApiKey(apiKey);
+  mapView
+      .show(new MapOptions(showUserLocation: true, showMyLocationButton: true));
+}
 
 class HomePage extends StatelessWidget {
   HomePage({this.onSignedOut});
@@ -32,8 +39,14 @@ class HomePage extends StatelessWidget {
           ],
         ),
         body: Container(
-          child:
-              Center(child: Text('Welcome', style: TextStyle(fontSize: 32.0))),
-        ));
+            child: Center(
+          child: RaisedButton(
+            child: Text('Tap me'),
+            color: Colors.blue,
+            textColor: Colors.white,
+            elevation: 7.0,
+            onPressed: displayMap,
+          ),
+        )));
   }
 }
