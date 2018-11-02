@@ -8,8 +8,14 @@ final MapView mapView = new MapView();
 
 void displayMap() {
   MapView.setApiKey(apiKey);
-  mapView
-      .show(new MapOptions(showUserLocation: true, showMyLocationButton: true));
+  mapView.show(
+    new MapOptions(
+        showUserLocation: true,
+        showMyLocationButton: true,
+        title: "Google Maps",
+        initialCameraPosition:
+            new CameraPosition(new Location(30.91, 75.84), 12.0)),
+  );
 }
 
 class HomePage extends StatelessWidget {
@@ -42,7 +48,7 @@ class HomePage extends StatelessWidget {
             child: Center(
           child: RaisedButton(
             child: Text('Tap me'),
-            color: Colors.blue,
+            color: Colors.red,
             textColor: Colors.white,
             elevation: 7.0,
             onPressed: displayMap,

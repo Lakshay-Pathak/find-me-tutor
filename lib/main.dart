@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return AuthProvider(
       auth: Auth(),
       child: MaterialApp(
-        title: 'Flutter login demo',
+        title: 'Find Me Tutor',
         theme: ThemeData(
           primarySwatch: Colors.red,
         ),

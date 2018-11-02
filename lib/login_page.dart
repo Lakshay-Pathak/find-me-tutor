@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'auth_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EmailFieldValidator {
   static String validate(String value) {
@@ -70,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           };
           ref.child('users').push().set(jsondata);
 
+          Firestore.instance.collection('users').add(jsondata);
           print('Registered user: $userId');
         }
         widget.onSignedIn();
