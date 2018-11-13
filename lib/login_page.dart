@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'auth_provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:location/location.dart';
 
 class EmailFieldValidator {
   static String validate(String value) {
@@ -36,6 +37,10 @@ class _LoginPageState extends State<LoginPage> {
   String _name;
   String _mobile;
   int groupValue;
+  Location _location = new Location();
+  bool _permission = false;
+
+  Map<String, double> location;
 
   String usertype;
 
@@ -62,12 +67,17 @@ class _LoginPageState extends State<LoginPage> {
           String userId =
               await auth.createUserWithEmailAndPassword(_email, _password);
           final ref = FirebaseDatabase.instance.reference();
+
+          _permission = await _location.hasPermission();
+          location = await _location.getLocation();
           var jsondata = {
             "email": _email,
             "password": _password,
             "name": _name,
             "mobile": _mobile,
-            "usertype": usertype
+            "usertype": usertype,
+            "latitude": location["latitude"],
+            "longitude": location["longitude"]
           };
           ref.child('users').push().set(jsondata);
 
@@ -99,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Flutter login demo'),
+          title: Text('Find Me Tutor'),
         ),
         body: Container(
             padding: EdgeInsets.all(16.0),
