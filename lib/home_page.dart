@@ -1,35 +1,19 @@
 import 'package:flutter/material.dart';
 import 'auth_provider.dart';
 import 'package:map_view/map_view.dart';
-import 'googlemaps.dart';
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 var apiKey = "AIzaSyBlUWeW6NpkVWZ5yauucWt-RjQCE_pe6GM";
-
+String email;
+String usertype1;
 List<Marker> markers = <Marker>[];
-
-/*class MarkerList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new StreamBuilder(
-      stream: Firestore.instance
-          .collection('users')
-          .where('usertype', isEqualTo: 'Tutor')
-          .snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) return new Text('Loading...');
-        return new ListView(
-          children: snapshot.data.documents.map((document) {
-            return new ListTile(
-              title: new Text(document['name']),
-              subtitle: new Text(document['email']),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-}*/
+String usertype;
+Future<String> currentUser() async {
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  return user?.email;
+}
 
 class HomePage extends StatefulWidget {
   HomePage({this.onSignedOut});
@@ -50,18 +34,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final MapView mapView = new MapView();
+
   void loadMap() {
-    Firestore.instance
-        .collection('users')
-        .where('usertype', isEqualTo: 'Tutor')
-        .snapshots()
-        .listen((data) {
-      for (int i = 0; i < data.documents.length; i++) {
-        markers.add(new Marker('$i+1', data.documents[i]['name'],
-            data.documents[i]['latitude'], data.documents[i]['longitude'],
-            color: Colors.amber));
-      }
-    });
+    if (usertype == 'Student') {
+      Firestore.instance
+          .collection('users')
+          .where('usertype', isEqualTo: 'Tutor')
+          .snapshots()
+          .listen((data) {
+        for (int i = 0; i < data.documents.length; i++) {
+          markers.add(new Marker('$i+1', data.documents[i]['name'],
+              data.documents[i]['latitude'], data.documents[i]['longitude'],
+              color: Colors.amber));
+        }
+      });
+    } else {
+      Firestore.instance
+          .collection('users')
+          .where('usertype', isEqualTo: 'Student')
+          .snapshots()
+          .listen((data) {
+        for (int i = 0; i < data.documents.length; i++) {
+          markers.add(new Marker('$i+1', data.documents[i]['name'],
+              data.documents[i]['latitude'], data.documents[i]['longitude'],
+              color: Colors.amber));
+        }
+      });
+    }
   }
 
   void displayMap() {
@@ -82,7 +81,7 @@ class _HomePageState extends State<HomePage> {
         mapView.dismiss();
       }
     });
-    mapView.onMapTapped.listen((_) {
+    mapView.onMapTapped.listen((_) async {
       setState(() {
         mapView.setMarkers(markers);
         mapView.zoomToFit(padding: 100);
@@ -92,6 +91,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    foo();
+    _getUtype();
+    print(email + usertype);
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome'),
@@ -107,13 +109,27 @@ class _HomePageState extends State<HomePage> {
           Container(
         child: Center(
           child: RaisedButton(
-              child: Text('Tap me'),
+              child: Text('CLICK ME'),
               color: Colors.red,
               textColor: Colors.white,
-              elevation: 7.0,
+              elevation: 10.0,
               onPressed: displayMap),
         ),
       ),
     );
   }
+}
+
+foo() async {
+  email = await currentUser();
+}
+
+_getUtype() async {
+  Firestore.instance
+      .collection('users')
+      .where('email', isEqualTo: '$email')
+      .snapshots()
+      .listen((data) {
+    usertype = data.documents[0]['usertype'];
+  });
 }

@@ -4,6 +4,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:location/location.dart';
 
+String typeu;
+
 class EmailFieldValidator {
   static String validate(String value) {
     return value.isEmpty ? 'Email can\'t be empty' : null;
@@ -219,8 +221,10 @@ class _LoginPageState extends State<LoginPage> {
       if (utype == 1) {
         groupValue = 1;
         usertype = "Tutor";
+        typeu = "Tutor";
       } else if (utype == 2) {
         groupValue = 2;
+        typeu = "Student";
         usertype = "Student";
       }
     });
